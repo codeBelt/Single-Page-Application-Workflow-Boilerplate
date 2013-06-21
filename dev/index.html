@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+
+<!-- @if NODE_ENV == 'DEVELOPMENT' -->
+<html lang="en">
+<!-- @endif -->
+
+<!-- @if NODE_ENV == 'PRODUCTION' -->
+<html lang="en" manifest="prod/offline/offline.manifest">
+<!-- @endif -->
+
+    <head>
+        <!-- The current version of the application -->
+        <meta name="version" content="<!-- @echo buildVersion -->"/>
+
+        <!-- Define charset for HTML5 Doctype -->
+        <meta charset="utf-8" />
+
+        <!-- Add the fav icon -->
+        <link rel="icon" href="/favicon.ico" type="image/x-icon">
+        <link rel="shortcut icon" href="/favicon.ico" type="image/x-icon">
+
+        <!-- META DATA IOS WEBAPP -->
+        <meta name="apple-mobile-web-app-title" content="3M Window Film">
+        <meta name="apple-mobile-web-app-capable" content="yes"/>
+        <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+        <link rel="apple-touch-icon" sizes="29x29" href="<!-- @echo basePath -->images/moblie-icons/icon-29x29.png" />
+        <link rel="apple-touch-icon" sizes="50x50" href="<!-- @echo basePath -->images/moblie-icons/icon-50x50.png" />
+        <link rel="apple-touch-icon" sizes="58x58" href="<!-- @echo basePath -->images/moblie-icons/icon-58x58.png" />
+        <link rel="apple-touch-icon" sizes="72x72" href="<!-- @echo basePath -->images/moblie-icons/icon-72x72.png" />
+        <link rel="apple-touch-icon" sizes="100x100" href="<!-- @echo basePath -->images/moblie-icons/icon-100x100.png" />
+        <link rel="apple-touch-icon" sizes="114x114" href="<!-- @echo basePath -->images/moblie-icons/icon-144x144.png">
+
+        <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=0, minimum-scale=1.0, maximum-scale=1.0">
+
+        <!-- @if NODE_ENV == 'DEVELOPMENT' -->
+            <link rel="stylesheet" media="screen, projection" href="dev/styles/setup.css" />
+            <link rel="stylesheet" media="screen, projection" href="dev/styles/bootstrap.css" />
+            <link rel="stylesheet" media="screen, projection" href="dev/styles/screen.css" />
+        <!-- @endif -->
+
+        <!-- @if NODE_ENV == 'PRODUCTION' -->
+            <link rel="stylesheet" media="screen, projection" href="prod/styles/main.min.css" />
+        <!-- @endif -->
+    </head>
+    <body>
+        <!-- @if NODE_ENV == 'DEVELOPMENT' -->
+            <script src="dev/libs/require/require.js" data-main="dev/scripts/AppBootstrap.js"></script>
+            <script src="dev/scripts/config.js"></script>
+        <!-- @endif -->
+
+        <!-- @if NODE_ENV == 'PRODUCTION' -->
+            <script src="prod/scripts/require.js" data-main="prod/scripts/app.min.js"></script>
+        <!-- @endif -->
+    </body>
+</html>
