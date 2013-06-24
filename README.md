@@ -1,4 +1,4 @@
 Single Page Application Workflow Boilerplate
 ============================================
 
-Tutorial on codeBelt.com will come soonish.
+Check out the tutorial at <a href="http://www.codebelt.com/javascript/single-page-javascript-application-workflow/">http://www.codebelt.com/javascript/single-page-javascript-application-workflow/</a> on how to use these files.

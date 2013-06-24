@@ -3,16 +3,18 @@ module.exports = function(grunt) {
     // Project configuration.
     grunt.initConfig({
 
-        //Read the package.json (optional)
+        // This will load in our package.json file so we can have access
+        // to the project name and version number.
         pkg: grunt.file.readJSON('package.json'),
 
-        // Metadata.
-        meta: {
-            basePath: '../',
-            devPath: '../dev/',
-            prodPath: '../prod/'
-        },
+        // Constants for the Gruntfile so we can easily change the path for
+        // our environments.
+        BASE_PATH: '../',
+        DEVELOPMENT_PATH: '../dev/',
+        PRODUCTION_PATH: '../prod/',
 
+        // A code block that will be added to all our minified code files.
+        // Gets the name and version from the above loaded 'package.json' file.
         banner: [
                  '/*',
                  '* Project: <%= pkg.name %>',
@@ -23,6 +25,8 @@ module.exports = function(grunt) {
         ],
 
 
+        // The different constants name that will be use to build our html files.
+        // Example: <!-- @if NODE_ENV == 'DEVELOPMENT' -->
         env: {
             dev: {
                 NODE_ENV : 'DEVELOPMENT'
@@ -32,30 +36,42 @@ module.exports = function(grunt) {
             }
         },
 
+        // Allows us to pass in variables to files that have place holders so we
+        // can similar files with different data.
+        // Example: <!-- @echo buildVersion --> or <!-- @echo filePath -->
         preprocess : {
+            // Task to create the dev.html file that will be used during development.
+            // Passes the app version and a file path into the dev/index.html and
+            // creates the /dev.html
             dev : {
-                src : '<%= meta.devPath %>' + 'index.html',
-                dest : '<%= meta.basePath %>' + 'dev.html',
+                src : '<%= DEVELOPMENT_PATH %>' + 'index.html',
+                dest : '<%= BASE_PATH %>' + 'dev.html',
                 options : {
                     context : {
                         buildVersion : '<%= pkg.version %>',
-                        basePath: 'dev/'
+                        filePath: 'dev/'
                     }
                 }
             },
+            // Task to create the index.html file that will be used in production.
+            // Passes the app version and a file path into the dev/index.html and
+            // creates the /index.html
             prod : {
-                src : '<%= meta.devPath %>' + 'index.html',
-                dest : '<%= meta.basePath %>' + 'index.html',
+                src : '<%= DEVELOPMENT_PATH %>' + 'index.html',
+                dest : '<%= BASE_PATH %>' + 'index.html',
                 options : {
                     context : {
                         buildVersion : '<%= pkg.version %>',
-                        basePath: 'prod/'
+                        filePath: 'prod/'
                     }
                 }
             },
+            // Task to create the HTML5 Cache Manifest.
+            // Passes the app version and the current date into the
+            // dev/offline/offline.manifest and creates prod/offline/offline.manifest.
             manifest : {
-                src : '<%= meta.devPath %>' + 'offline/offline.manifest',
-                dest : '<%= meta.prodPath %>' + 'offline/offline.manifest',
+                src : '<%= DEVELOPMENT_PATH %>' + 'offline/offline.manifest',
+                dest : '<%= PRODUCTION_PATH %>' + 'offline/offline.manifest',
                 options : {
                     context : {
                         buildVersion : '<%= pkg.version %>',
@@ -65,13 +81,15 @@ module.exports = function(grunt) {
             }
         },
 
+        // The RequireJS plugin that will use uglify2 to build and minify our
+        // JavaScript, templates and any other data we include in the require files.
         requirejs: {
             compile: {
                 options: {
-                    baseUrl: '<%= meta.devPath %>' + 'scripts/',                            // Path of source scripts, relative to this build file
-                    mainConfigFile: '<%= meta.devPath %>' + 'scripts/config.js',            // Path of shared configuration file, relative to this build file
+                    baseUrl: '<%= DEVELOPMENT_PATH %>' + 'scripts/',                        // Path of source scripts, relative to this build file
+                    mainConfigFile: '<%= DEVELOPMENT_PATH %>' + 'scripts/config.js',        // Path of shared configuration file, relative to this build file
                     name: 'AppBootstrap',                                                   // Name of input script (.js extension inferred)
-                    out: '<%= meta.prodPath %>' + 'scripts/app.min.js',                     // Path of built script output
+                    out: '<%= PRODUCTION_PATH %>' + 'scripts/app.min.js',                   // Path of built script output
 
                     fileExclusionRegExp: /.svn/,                                            // Ignore all files matching this pattern
                     useStrict: true,
@@ -99,6 +117,8 @@ module.exports = function(grunt) {
             }
         },
 
+        // Minifies our css files that we specify and adds the banner to the top
+        // of the minified css file.
         cssmin: {
             main: {
                 options: {
@@ -106,15 +126,17 @@ module.exports = function(grunt) {
                     keepSpecialComments: 0                                                  // '*' for keeping all (default), 1 for keeping first one, 0 for removing all
                 },
                 files: {
-                    '<%= meta.prodPath %>styles/main.min.css': [
-                        '<%= meta.devPath %>' + 'styles/setup.css',
-                        '<%= meta.devPath %>' + 'styles/bootstrap.css',
-                        '<%= meta.devPath %>' + 'styles/screen.css'
+                    '<%= PRODUCTION_PATH %>styles/main.min.css': [
+                        '<%= DEVELOPMENT_PATH %>' + 'styles/setup.css',
+                        '<%= DEVELOPMENT_PATH %>' + 'styles/bootstrap.css',
+                        '<%= DEVELOPMENT_PATH %>' + 'styles/screen.css'
                     ]
                 }
             }
         },
 
+        // After the preprocess plugin creates our /index.html we remove all comments
+        // and white space from the file so it will be minified.
         htmlmin: {
             dist: {
                 options: {
@@ -122,34 +144,40 @@ module.exports = function(grunt) {
                     collapseWhitespace: true
                 },
                 files: {
-                    '<%= meta.basePath %>index.html': '<%= meta.basePath %>index.html'
+                    '<%= BASE_PATH %>index.html': '<%= BASE_PATH %>index.html'
                 }
             }
         },
 
+        // Copies certain files over from the dev/ folder to the prod/ so we don't
+        // have to do it manually.
         copy: {
             prod:  {
                 files: [
-                    { expand: true, cwd: '<%= meta.devPath %>' + 'libs/require/', src: 'require.js', dest: '<%= meta.prodPath %>' + 'scripts/' } , // Copy require.js file to production.
-                    { expand: true, cwd: '<%= meta.devPath %>', src: 'favicon.ico', dest: '<%= meta.prodPath %>' } , // Copy require.js file to production.
-                    { expand: true, cwd: '<%= meta.devPath %>', src: ['images/**'], dest: '<%= meta.prodPath %>' }                                 // Copy the image folder to production.
+                    // Copy require.js file from dev/libs/require/ to prod/scripts/.
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>' + 'libs/require/', src: 'require.js', dest: '<%= PRODUCTION_PATH %>' + 'scripts/' } ,
+                    // Copy favicon.ico file from dev/ to prod/.
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: 'favicon.ico', dest: '<%= PRODUCTION_PATH %>' } ,
+                    // Copy the image folder from dev/images/ to prod/images/.
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: ['images/**'], dest: '<%= PRODUCTION_PATH %>' }
                 ]
             }
         },
 
+        // Takes the minified JavaScript file and adds the banner to the top.
         concat: {
             prod: {
                 options: {
                     banner: '<%= banner.join("\\n") %> \n'
                 },
-                src: ['<%= meta.prodPath %>' + 'scripts/app.min.js'],
-                dest: '<%= meta.prodPath %>' + 'scripts/app.min.js'
+                src: ['<%= PRODUCTION_PATH %>' + 'scripts/app.min.js'],
+                dest: '<%= PRODUCTION_PATH %>' + 'scripts/app.min.js'
             }
         }
 
     });
 
-    // These plugins provide necessary tasks.
+    // Loads the necessary tasks for this Grunt file.
     grunt.loadNpmTasks('grunt-contrib-requirejs');
     grunt.loadNpmTasks('grunt-contrib-cssmin');
     grunt.loadNpmTasks('grunt-contrib-htmlmin');
@@ -158,7 +186,7 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
 
-    // Default task.
+    // Grunt tasks.
     grunt.registerTask('default', ['requirejs']);
     grunt.registerTask('dev', ['env:dev', 'preprocess:dev']);
     grunt.registerTask('prod', ['copy:prod', 'env:prod', 'preprocess:prod', 'preprocess:manifest', 'cssmin', 'htmlmin', 'requirejs', 'concat:prod']);
