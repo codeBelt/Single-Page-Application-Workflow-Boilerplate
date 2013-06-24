@@ -1,8 +1,8 @@
 {
-    "name": "RequireJS-with-GruntJS",
+    "name": "Single-Page-Application-GruntJS",
     "version": "0.1.0",
-    "description": "A sample single page application workflow boilerplate with Grunt.js",
-    "url": "http://www.codebelt.com/",
+    "description": "A sample single page JavaScript application workflow boilerplate with Grunt.js",
+    "url": "http://www.codebelt.com/javascript/single-page-javascript-application-workflow/",
     "developedBy": "codeBelt",
 
     "devDependencies": {
