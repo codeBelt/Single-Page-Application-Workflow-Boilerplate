@@ -173,6 +173,34 @@ module.exports = function(grunt) {
                 src: ['<%= PRODUCTION_PATH %>' + 'scripts/app.min.js'],
                 dest: '<%= PRODUCTION_PATH %>' + 'scripts/app.min.js'
             }
+        },
+
+        // Starts a node.js server for our environments.
+        connect: {
+            dev: {
+                options: {
+                    port: 9000,
+                    keepalive: true,
+                    base: '<%= BASE_PATH %>'
+                }
+            },
+            prod: {
+                options: {
+                    port: 9001,
+                    keepalive: true,
+                    base: '<%= BASE_PATH %>'
+                }
+            }
+        },
+
+        // Opens the default browser with the html file.
+        open: {
+            dev: {
+                path: 'http://localhost:9000/dev.html'
+            },
+            prod: {
+                path: 'http://localhost:9001/index.html'
+            }
         }
 
     });
@@ -185,10 +213,14 @@ module.exports = function(grunt) {
     grunt.loadNpmTasks('grunt-preprocess');
     grunt.loadNpmTasks('grunt-contrib-copy');
     grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-connect');
+    grunt.loadNpmTasks('grunt-open');
 
     // Grunt tasks.
     grunt.registerTask('default', ['requirejs']);
     grunt.registerTask('dev', ['env:dev', 'preprocess:dev']);
     grunt.registerTask('prod', ['copy:prod', 'env:prod', 'preprocess:prod', 'preprocess:manifest', 'cssmin', 'htmlmin', 'requirejs', 'concat:prod']);
 
+    grunt.registerTask('dev:open', ['connect:dev', 'open:dev']);
+    grunt.registerTask('prod:open', ['connect:prod', 'open:prod']);
 };
