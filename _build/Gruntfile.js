@@ -10,7 +10,7 @@ module.exports = function(grunt) {
         // Constants for the Gruntfile so we can easily change the path for
         // our environments.
         BASE_PATH: '../',
-        DEVELOPMENT_PATH: '../dev/',
+        DEVELOPMENT_PATH: '../src/',
         PRODUCTION_PATH: '../prod/',
 
         // A code block that will be added to all our minified code files.
@@ -40,21 +40,21 @@ module.exports = function(grunt) {
         // can similar files with different data.
         // Example: <!-- @echo buildVersion --> or <!-- @echo filePath -->
         preprocess : {
-            // Task to create the dev.html file that will be used during development.
-            // Passes the app version and a file path into the dev/index.html and
-            // creates the /dev.html
+            // Task to create the src.html file that will be used during development.
+            // Passes the app version and a file path into the src/index.html and
+            // creates the /src.html
             dev : {
                 src : '<%= DEVELOPMENT_PATH %>' + 'index.html',
                 dest : '<%= BASE_PATH %>' + 'dev.html',
                 options : {
                     context : {
                         buildVersion : '<%= pkg.version %>',
-                        filePath: 'dev/'
+                        filePath: 'src/'
                     }
                 }
             },
             // Task to create the index.html file that will be used in production.
-            // Passes the app version and a file path into the dev/index.html and
+            // Passes the app version and a file path into the src/index.html and
             // creates the /index.html
             prod : {
                 src : '<%= DEVELOPMENT_PATH %>' + 'index.html',
@@ -68,7 +68,7 @@ module.exports = function(grunt) {
             },
             // Task to create the HTML5 Cache Manifest.
             // Passes the app version and the current date into the
-            // dev/offline/offline.manifest and creates prod/offline/offline.manifest.
+            // src/offline/offline.manifest and creates prod/offline/offline.manifest.
             manifest : {
                 src : '<%= DEVELOPMENT_PATH %>' + 'offline/offline.manifest',
                 dest : '<%= PRODUCTION_PATH %>' + 'offline/offline.manifest',
@@ -149,17 +149,17 @@ module.exports = function(grunt) {
             }
         },
 
-        // Copies certain files over from the dev/ folder to the prod/ so we don't
+        // Copies certain files over from the src/ folder to the prod/ so we don't
         // have to do it manually.
         copy: {
             prod:  {
                 files: [
-                    // Copy require.js file from dev/libs/require/ to prod/scripts/.
-                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>' + 'libs/require/', src: 'require.js', dest: '<%= PRODUCTION_PATH %>' + 'scripts/' } ,
-                    // Copy favicon.ico file from dev/ to prod/.
-                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: 'favicon.ico', dest: '<%= PRODUCTION_PATH %>' } ,
-                    // Copy the image folder from dev/images/ to prod/images/.
-                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: ['images/**'], dest: '<%= PRODUCTION_PATH %>' }
+                    // Copy favicon.ico file from development to production
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: 'favicon.ico', dest: '<%= PRODUCTION_PATH %>' },
+                    // Copy the media folder from development to production
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: ['assets/media/**'], dest: '<%= PRODUCTION_PATH %>' },
+                    // Copy require.js file from src/vendor/require/ to prod/scripts/.
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>' + 'vendor/require/', src: 'require.js', dest: '<%= PRODUCTION_PATH %>' + 'scripts/' }
                 ]
             }
         },
@@ -196,7 +196,7 @@ module.exports = function(grunt) {
         // Opens the default browser with the html file.
         open: {
             dev: {
-                path: 'http://localhost:9000/dev.html'
+                path: 'http://localhost:9000/src.html'
             },
             prod: {
                 path: 'http://localhost:9001/index.html'

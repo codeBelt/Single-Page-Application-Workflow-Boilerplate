@@ -3,27 +3,27 @@
 */
 require.config({
 
-    baseUrl: 'dev/scripts/',
+    baseUrl: 'assets/scripts/',
 
     paths: {
         //main libraries
-        jquery: '../libs/jquery/jquery-1.9.1',
-        lodash: '../libs/lodash/lodash.compat',
+        jquery: '../vendor/jquery/jquery-1.9.1',
+        lodash: '../vendor/lodash/lodash.compat',
 
         //shortcut paths
         templates: '../templates',
         data: '../data',
 
         //require plugins
-        text: '../libs/require/text',
-        tpl: '../libs/require/tpl',
-        json: '../libs/require/json',
+        text: '../vendor/require/text',
+        tpl: '../vendor/require/tpl',
+        json: '../vendor/require/json',
 
         //jquery plugins
-        'bootstrap': '../libs/bootstrap/bootstrap',
+        'bootstrap': '../vendor/bootstrap/bootstrap',
 
         //other plugins
-        json2: '../libs/json2'
+        json2: '../vendor/json2'
     },
 
     shim: {
