@@ -96,7 +96,9 @@ module.exports = function(grunt) {
                     // Copy the media folder from development to production
                     { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', src: ['assets/media/**'], dest: '<%= PRODUCTION_PATH %>' },
                     // Copy the index.html file from development to production
-                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', dest: '<%= PRODUCTION_PATH %>', src: ['index.html'], filter: 'isFile', dot: true }
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>', dest: '<%= PRODUCTION_PATH %>', src: ['index.html'], filter: 'isFile', dot: true },
+                    // Copy require.js file from development to production
+                    { expand: true, cwd: '<%= DEVELOPMENT_PATH %>' + 'assets/vendor/require/', src: 'require.js', dest: '<%= PRODUCTION_PATH %>' + 'assets/scripts/' }
                 ]
             }
         },
@@ -163,6 +165,26 @@ module.exports = function(grunt) {
         },
 
         /**
+         * The useminPrepare part of the usemin plugin looks at the html file and checks for a build:js or build:css code block.
+         * It will take those files found in the code block(s) and concat them together and then runs uglify for js and/or cssmin for css files.
+         * useminPrepare requires grunt-contrib-uglify, grunt-contrib-concat, and grunt-contrib-cssmin plugins to be installed. Which is listed in the package.json file.
+         *
+         * The usemin part will remove the code block(s) and replace that area with the single file path in the html file.
+         */
+        useminPrepare: {
+            html: ['<%= DEVELOPMENT_PATH %>' + 'index.html'],
+            options: {
+                dest: '<%= PRODUCTION_PATH %>'// Moves the single concatenated files to production.
+            }
+        },
+        usemin: {
+            html: ['<%= PRODUCTION_PATH %>' + 'index.html'],
+            options: {
+                dirs: ['<%= PRODUCTION_PATH %>']
+            }
+        },
+
+        /**
          * The RequireJS plugin that will use uglify2 to build and minify our JavaScript,
          * templates and any other data we include in the require files.
          */
@@ -172,7 +194,7 @@ module.exports = function(grunt) {
                     baseUrl: '<%= DEVELOPMENT_PATH %>' + 'assets/scripts/',                         // Path of source scripts, relative to this build file
                     mainConfigFile: '<%= DEVELOPMENT_PATH %>' + 'assets/scripts/config.js',         // Path of shared configuration file, relative to this build file
                     name: 'AppBootstrap',                                                           // Name of input script (.js extension inferred)
-                    out: '<%= PRODUCTION_PATH %>' + 'assets/scripts/app.js',                        // Path of built script output
+                    out: '<%= PRODUCTION_PATH %>' + 'assets/scripts/app.min.js',                    // Path of built script output
 
                     fileExclusionRegExp: /.svn/,                                                    // Ignore all files matching this pattern
                     useStrict: true,
@@ -259,7 +281,7 @@ module.exports = function(grunt) {
                     paths: '<%= DEVELOPMENT_PATH %>' + 'assets/scripts/',
                     outdir: '<%= BASE_PATH %>docs',
                     themedir: '',
-                    extension: '.ts',                                   // Default '.js' <comma-separated list of file extensions>
+                    extension: '.js',                                   // Default '.js' <comma-separated list of file extensions>
                     exclude: ''
                 }
             }
@@ -357,7 +379,7 @@ module.exports = function(grunt) {
         'preprocess',
         'clean',
         'copy',
-        'useminPrepare', 'cssmin',
+        'useminPrepare', 'concat', 'cssmin',
         'usemin',
         'requirejs',
         'usebanner',
