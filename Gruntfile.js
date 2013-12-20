@@ -123,48 +123,6 @@ module.exports = function(grunt) {
         },
 
         /**
-         * Turns any JSON files into JavaScript files.
-         */
-        json: {
-            web: {
-                options: {
-                    namespace: 'JSON_DATA',
-                    includePath: false,
-                    processName: function(filename) {
-                        return filename.toLowerCase();
-                    }
-                },
-                src: ['<%= DEVELOPMENT_PATH %>' + 'assets/data/**/*.json'],
-                dest:  '<%= DEVELOPMENT_PATH %>' + 'assets/scripts/compiled/json.js'
-            }
-        },
-
-        /**
-         * Compiles the Handlebars templates into Javascript.
-         * http://handlebarsjs.com/
-         */
-        handlebars: {
-            compile: {
-                options: {
-                    namespace: 'JST',
-                    // Registers all files that start with '_' as a partial.
-                    partialRegex: /^_/,
-                    // Shortens the file path for the templates.
-                    processName: function(filename) {
-                        return filename.slice(filename.indexOf("template"), filename.length);
-                    },
-                    // Shortens the file path for the partials.
-                    processPartialName: function(filePath) {
-                        return filePath.slice(filePath.indexOf("template"), filePath.length);
-                    }
-                },
-                files: {
-                    '<%= DEVELOPMENT_PATH %>assets/scripts/compiled/templates.tmpl.js': ['<%= DEVELOPMENT_PATH %>' + 'assets/templates/**/*.hbs']
-                }
-            }
-        },
-
-        /**
          * The useminPrepare part of the usemin plugin looks at the html file and checks for a build:js or build:css code block.
          * It will take those files found in the code block(s) and concat them together and then runs uglify for js and/or cssmin for css files.
          * useminPrepare requires grunt-contrib-uglify, grunt-contrib-concat, and grunt-contrib-cssmin plugins to be installed. Which is listed in the package.json file.
